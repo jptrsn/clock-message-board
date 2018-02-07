@@ -1,0 +1,31 @@
+# Sample configuration.yaml entry for the message board WS2812B LEDs
+light:
+- platform: mqtt_json
+  name: "Message Board"
+  state_topic: "messageboard/ledstrip"
+  command_topic: "messageboard/ledstrip/set"
+  effect: true
+  effect_list:
+    - solid
+    - bpm
+    - candy cane
+    - confetti
+    - cyclon rainbow
+    - dots
+    - fire
+    - glitter
+    - juggle
+    - lightning
+    - noise
+    - police all
+    - police one
+    - rainbow
+    - rainbow with glitter
+    - ripple
+    - sinelon
+    - twinkle
+  brightness: true
+  flash: true
+  rgb: true
+  optimistic: false
+  qos: 0

@@ -1,0 +1,11 @@
+# Sample entry for MQTT Sensors
+sensor:
+- platform: mqtt
+  name: 'message_board_temp'
+  state_topic: 'messageboard/temperature'
+  unit_of_measurement: '°C'
+
+- platform: mqtt
+  name: 'message_board_humidity'
+  state_topic: 'messageboard/humidity'
+  unit_of_measurement: '%'
