@@ -284,7 +284,7 @@ void handlemachineState() {
           PRINT("---------------- Message repeat ", i);
           PRINTLN(" ----------------");
           machineState = 3;
-        } else if (newMessageAvailable) {
+        } else if (newMessageAvailable && machineState != 1) {
           strcpy(curMessage, newMessage);
           machineState = 3;
         } else {
