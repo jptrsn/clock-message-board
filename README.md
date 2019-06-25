@@ -1,8 +1,10 @@
+<img src="./images/clock-message-board.jpg" style="width:50%;float:right;margin:24px;">
+
 # clock-message-board
 An IoT clock that will also display messages posted to an MQTT topic. Uses an ESP8266, MAX7219 LED display matrix modules, and the MD_MAX72xx and MD_PAROLA libraries, as well as WS2812B LED strip. All code and related files are copyright 2018, James Petersen, published under an MIT license. See [https://github.com/jptrsn/clock-message-board/blob/master/LICENSE](https://github.com/jptrsn/clock-message-board/blob/master/LICENSE) for information about use, modification, and sharing restrictions. Generally, unless you want to make money from this project, you are free to use, modify or share anything found within. The project was originally designed to integrate well with [Home Assistant](http://www.homeassistant.io) and [Node Red](https://nodered.org/), but should work with any MQTT broker that supports JSON objects. If you do not have an MQTT broker configured, you may want to look at [CloudMQTT](https://www.cloudmqtt.com/) or [Adafruit IO](https://io.adafruit.com/) to get started without any additional hardware.
 
 ## Features
-- Automatic time syncronization with NTP servers.
+- Automatic time synchronization with NTP servers.
 - Includes readings from HTU21D (SI7201) Temperature/Humidity sensor (attached through I2C)
 - Over-The-Air Updates (OTA) *(board must have sufficient flash memory; tested on a WeMos D1 Mini)*
 - Subscribe to an MQTT topic to display other relevant information using a JSON object (optional, it is not required)

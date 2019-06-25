@@ -26,11 +26,10 @@
 #define FASTLED_INTERRUPT_RETRY_COUNT 1
 #include <FastLED.h>
 
-#include "config_esp07.h"
-
+#include "config.h"
 
 // HARDWARE SPI
-MD_Parola P = MD_Parola(CS_PIN, MAX_DEVICES);
+MD_Parola P = MD_Parola(MD_MAX72XX::FC16_HW, CS_PIN, MAX_DEVICES);
 
 // WiFi login parameters - network name and password
 const char* ssid = CONFIG_WIFI_SSID;
@@ -187,8 +186,8 @@ void setup() {
   PRINT("\nConnecting to ", ssid);
   sprintf(curMessage, "%s %s", "Connecting to ", ssid);
 
-  WiFi.hostname(host_name);
   WiFi.begin(ssid, password);
+  WiFi.hostname(host_name);
   waitForMessageComplete(true);
 
   handleWifi(false);
@@ -202,7 +201,7 @@ void setup() {
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
-  sensor.begin(4,5);
+  sensor.begin(SDA, SCL);
 
   PRINTS("\nWiFi connected");
   getNtpTime();
@@ -254,14 +253,6 @@ void loop() {
       updateLastMessageDisplayed = false;
     }
 
-    // When a new message is available and the display is in the correct state, update the display with the new message
-//    if (newMessageAvailable && machineState != 3 && machineState != 1) {
-//      PRINTLN("---------------------------- newMessageAvailable flag set ----------------------------");
-//      strcpy(curMessage, newMessage);
-//      machineState = 3;
-//      i = 0;
-//    }
-
     // Run state machine evaluations
     handlemachineState();
   }
@@ -301,6 +292,10 @@ void handlemachineState() {
         machineState = 0;
         break;
       }
+    case 2: {
+
+        break;
+      }
     case 3: { // Clock is transitioning from showing current time to hidden, in order to display a new message
         PRINT("repeatMessage: ", repeatMessage);
         PRINTLN(" ");
@@ -326,7 +321,7 @@ void handlemachineState() {
         P.displayText(curMessage, PA_CENTER, frameDelay, messagePause, effectIn, effectOut);
         i++;
         updateLastMessageDisplayed = true;
-        machineState = 1;
+        machineState = 6;
         break;
       }
     case 5: { // Clock is displaying exit animation
@@ -433,11 +428,15 @@ void readSensor() {
   if (millis() - lastSensorUpdate < CONFIG_SENSOR_DELAY) {
     return;
   }
-  PRINTLN("readSensor");
+  PRINTS("readSensor\t");
+
   // HTU21D library
   float humidity = sensor.readCompensatedHumidity() + HUMIDITY_CORRECTION;
   float celsTemp = sensor.readTemperature() + TEMPERATURE_CORRECTION;
 
+  PRINT("Temp: %s C", celsTemp);
+  PRINT("Hum: %s %", humidity);
+  PRINTLN();
   postData(celsTemp, humidity);
   lastSensorUpdate = millis();
 }
@@ -532,25 +531,25 @@ void reconnect() {
   if (!client.connected()) {
     PRINTS("Attempting MQTT connection...");
     client.connect(client_id, mqtt_username, mqtt_password);
-    
+
     P.displayScroll("Connecting to MQTT", PA_CENTER, scrollEffect, FRAME_DELAY_DEFAULT);
     waitForMessageComplete(false);
-    
+
     // Attempt to connect
     if (client.connected()) {
       PRINTS("connected");
       client.subscribe(message_topic);
       client.subscribe(command_topic);
       client.subscribe(light_set_topic);
-      
+
       P.displayScroll("MQTT connected", PA_CENTER, scrollEffect, FRAME_DELAY_DEFAULT);
       waitForMessageComplete(false);
-      
+
     } else {
       PRINTS("failed, rc=");
       PRINTLN(client.state());
-      machineState = 6;
     }
+    machineState = 6;
   }
 }
 
@@ -748,6 +747,8 @@ void configureLedStrip() {
   setupStripedPalette( CRGB::Red, CRGB::Red, CRGB::White, CRGB::White); //for CANDY CANE
 
   gPal = HeatColors_p; //for FIRE
+
+  setColor(0, 0, 0); // Blank the LED strip
 }
 
 void callbackLight(char* topic, byte* payload, unsigned int len) {
