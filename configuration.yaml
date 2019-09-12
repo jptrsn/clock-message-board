@@ -1,6 +1,7 @@
 # Sample configuration.yaml entry for the message board WS2812B LEDs
 light:
-- platform: mqtt_json
+- platform: mqtt
+  schema: json
   name: "Message Board"
   state_topic: "messageboard/ledstrip"
   command_topic: "messageboard/ledstrip/set"
