@@ -479,7 +479,16 @@ bool processJson(char* message) {
     PRINTS("new message ");
     PRINTLN(newMessage);
   }
-
+   
+  if (root.containsKey("lum")) {
+    if ( root["lum"] != "") {
+      PRINTLN("LUM");
+      // set specific intensity
+      //P.setIntensity((int)root["lum"]); 
+      P.setIntensity(root["lum"].as<int>());
+    }
+  }
+   
   if (root.containsKey("repeat")) {
     PRINTS("---------------------- root.repeat ");
     repeatMessage = root["repeat"].as<int>();
