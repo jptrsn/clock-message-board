@@ -48,6 +48,7 @@ The MQTT topic should contain a JSON object with a "message" property. The full 
 ```
 {
     "message": {{String}},      [required]
+    "lum": {{Integer}},         [optional]
     "frameDelay": {{Integer}},  [optional]
     "repeat": {{Integer}},      [optional]
     "textEffect": {
